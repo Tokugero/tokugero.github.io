@@ -22,7 +22,7 @@ title: CTF Write-Ups And Other Technical Shenanigans
 email: phil@almueti.com
 description: >- # this means to ignore newlines until "baseurl:"
   This is to document my journey through the world of CTFs and other technical shenanigans.
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/Tokugero" # the subpath of your site, e.g. /blog
 url: "https://tokugero.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: tokugero
 github_username: tokugero
