@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "pwn test"
+title: "blockchain recovery"
 date: 2024-03-14 17:18:49 -0700
 categories: ctfs
 parent: 2024 - Hack The Box - Apocolypse
