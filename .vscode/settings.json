@@ -1,0 +1,5 @@
+{
+  "markdown.copyFiles.destination": {
+    "/ctf/**/*": "/assets/images/${documentRelativeFilePath}/${documentBaseName}/"
+  }
+}
