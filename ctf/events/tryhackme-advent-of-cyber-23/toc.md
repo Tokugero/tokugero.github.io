@@ -1,6 +1,7 @@
 ---
 layout: default
 title: TryHackMe - Advent of Cyber '23
+description: "Side quests found throughout the Advent of Cyber event, and my solutions. Remember: Everything can be solved with a hammer if you pretend it's a nail!"
 date: 2023-12-25 17:18:49 -0700
 parent: CTF Events
 nav_order: 1
