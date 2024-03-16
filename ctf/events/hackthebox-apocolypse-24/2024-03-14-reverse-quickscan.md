@@ -4,9 +4,9 @@ title: "reverse quickscan"
 date: 2024-03-14 17:18:49 -0700
 categories: ctfs
 description: The "Quick Scan" challenge in the reverse engineering category involved analyzing an application accessible via Netcat, which generated hex-encoded binary data in base64 format. The objective was to determine the value randomly generated and thrown onto a stack memory address.
-parent: HackTheBox - Apocolypse '24
+parent: HackTheBox - Apocalypse '24
 grand_parent: CTF Events
-event: "hackthebox-apocolypse"
+event: "hackthebox-apocalypse"
 tags:
 - "reverse engineering"
 - "Netcat"

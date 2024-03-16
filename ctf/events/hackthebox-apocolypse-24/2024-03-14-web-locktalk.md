@@ -4,9 +4,9 @@ title: "web locktalk"
 date: 2024-03-14 17:18:49 -0700
 categories: ctfs
 description: The "Web Lock Talk" challenge involved reverse engineering an application accessible via a web interface. By examining configuration files, identifying endpoint restrictions, and exploiting a known CVE in a JWT library, participants aimed to bypass access controls and access the hidden flag endpoint.
-parent: HackTheBox - Apocolypse '24
+parent: HackTheBox - Apocalypse '24
 grand_parent: CTF Events
-event: "hackthebox-apocolypse"
+event: "hackthebox-apocalypse"
 tags:
 - "reverse engineering"
 - "web security"
@@ -94,19 +94,19 @@ By leveraging the identified CVE, which allowed bypassing token signing, we devi
 #### Bypassing ACL
 The base page
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image.png)
 
 The /api/v1/get_ticket endpoint
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-1.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-1.png)
 
 Burpsuite request with altered URI, couldn't use urlencoding as ACL explicitly transcoded it before passing it through to the app
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-2.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-2.png)
 
 Contents of the returned JWT through CyberChef
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-3.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-3.png)
 
 
 ### Obtaining the Flag:
@@ -130,7 +130,7 @@ auth={"  eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTA2MjQ4MjMsImlhdCI6MT
 
 Using the token in the request
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-4.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-web-locktalk.md/2024-03-14-web-locktalk/image-4.png)
 
 ### Conclusion:
 The "Web Lock Talk" challenge exemplified the importance of thorough analysis and exploitation of known vulnerabilities in web applications. By strategically leveraging the identified CVE, we bypassed access controls and achieved the desired outcome. This experience highlights the significance of understanding application security mechanisms and exploiting vulnerabilities to solve complex web security challenges.

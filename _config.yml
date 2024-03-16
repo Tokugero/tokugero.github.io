@@ -34,7 +34,7 @@ collections:
 just_the_docs:
   collections:
     ctfs:
-      event: hackthebox-apocolypse
+      event: hackthebox-apocalypse
 plugins:
   - jekyll-feed
   - jekyll-remote-theme

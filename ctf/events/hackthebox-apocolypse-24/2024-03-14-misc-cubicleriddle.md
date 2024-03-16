@@ -4,9 +4,9 @@ title: "misc cubicleriddle"
 date: 2024-03-14 17:18:49 -0700
 categories: ctfs
 description: The "Cubicle Riddle" challenge presents a unique endpoint where participants are prompted to solve a riddle involving numbers. By understanding the code structure, including the "check answer" function and the use of bytecode manipulation with `code type`, participants can craft a function that satisfies the challenge criteria.
-parent: HackTheBox - Apocolypse '24
+parent: HackTheBox - Apocalypse '24
 grand_parent: CTF Events
-event: "hackthebox-apocolypse"
+event: "hackthebox-apocalypse"
 tags:
 - "misc"
 - "riddles"
@@ -73,7 +73,7 @@ print(f'Answer: {answer.hex()}')
 ```
 And moving this from hex > decimal> and then comma delimiting with a comma, we have a useable answer
 
-![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-misc-cubicleriddle.md/2024-03-14-misc-cubicleriddle/image-1.png)
+![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-misc-cubicleriddle.md/2024-03-14-misc-cubicleriddle/image-1.png)
 
 ```sh
         

