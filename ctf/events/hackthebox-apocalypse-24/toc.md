@@ -2,11 +2,10 @@
 layout: default
 title: HackTheBox - Apocalypse '24
 parent: CTF Events
-nav_order: 1
 has_children: true
 ---
 
-# HackTheBox - Apcolypse '24
+# HackTheBox - Apocalypse '24
 
 [Official Write-Ups can be found here!](https://github.com/hackthebox/cyber-apocalypse-2024)
 
