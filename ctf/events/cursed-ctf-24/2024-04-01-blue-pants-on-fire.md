@@ -26,7 +26,7 @@ For my recommended reading on topics that I didn't understand, you can skip to t
 #### Logging in
 First user was greeted with a proof-of-work challenge. This seems to be a measure of keeping brute-forcing down and gives an interactive path to the author with which to generate routes to the challenge before allowing users into the actual challenge.
 ```sh
-[12:23:59] tokugero :: pangolin  ➜  ~ » nc fuzzbox.addisoncrump.info 5000 | tee output
+[12:23:59] tokugero :: pangolin  ➜  ~ » nc <redacted> 5000 | tee output
 proof of work:
 curl -sSfL https://pwn.red/pow | sh -s s.AAA6mA==.IYecQs5WM8psI1QUf8xxYg==
 solution:
