@@ -33,6 +33,8 @@ for i in range(1000, 1100):
 
 The challenge gives us more modulus math to do. Some googling tells us that small `e` can be worked with Hastad's Broadcast, for which SageMath provides some convenient modulus math to help us solve.
 
+The more interesting takeaway was how I managed to get sage working. In this case I used the `sagemath/sagemath` docker image, and then connected my jupyter notebook via vscode/codium plugins to the local container across port 8888. The result of that was a locally running jupyter notebook that could run sage commands.
+
 
 ```python
 e = 3
