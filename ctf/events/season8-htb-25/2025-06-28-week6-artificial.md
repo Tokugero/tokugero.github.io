@@ -7,6 +7,7 @@ description: This challenge was pretty simple. Read some tensorflow documentatio
 parent: HackTheBox - Season 8
 grand_parent: Challenges
 event: "htb-season-8"
+published: false
 tags:
 - "web"
 - "linux"
