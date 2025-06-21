@@ -320,9 +320,9 @@ Main content of the upload page is below
 
 These are screenshots from the challenge site. There's not much functionality to go through unauthenticated. Just a home page, and about page, and an upload page with 2 forms. 
 
-![image-2.png](../../../assets/images/ctf/events/season9-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image-2.png)
-![image-3.png](../../../assets/images/ctf/events/season9-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image-3.png)
-![image.png](../../../assets/images/ctf/events/season9-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image.png)
+![image-2.png](../../../assets/images/ctf/events/season5-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image-2.png)
+![image-3.png](../../../assets/images/ctf/events/season5-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image-3.png)
+![image.png](../../../assets/images/ctf/events/season5-htb-24/2024-06-21-editorial.md/2024-06-21-editorial/image.png)
 
 The first form in this last screenshot is particularly interesting, as using our own private server as the URL address, I can see requests coming from the server. 
 

@@ -5,7 +5,7 @@ parent: Challenges
 has_children: true
 ---
 
-# Season 9 HTB
+# Season 5 HTB
 
 HTB frequently releases machine challenges that players have one week to solve before they go "inactive". 
 
