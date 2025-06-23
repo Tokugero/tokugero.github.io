@@ -32,9 +32,9 @@ Using the debug endpoint, you can send bytecode directly to a tcp endpoint. Usin
 
 I wrote a custom socket manager that used the authentication token of admin to simply post and parse through that endpoint to make all the payloads listed easier:
 
-1) FTP byte encode an EPSV session to RETR the RootCA.key and .crt
-2) Use Github Copilot to rewrite the used Rust Kafka library in python so I can generate valid publishing bytecode to the "update" topic that is vulnerable to the command injection.
-3) Generate SMPT commands to the mail server, as well as consume the unauthenticated mailhog API to validate sending of mail
+1) FTP byte encode an EPSV session to RETR the RootCA.key and .crt  
+2) Use Github Copilot to rewrite the used Rust Kafka library in python so I can generate valid publishing bytecode to the "update" topic that is vulnerable to the command injection.  
+3) Generate SMPT commands to the mail server, as well as consume the unauthenticated mailhog API to validate sending of mail.  
 
 With the root cert, I used openssl to sign a cert for sorcery.htb. Then hosted a web server that phoned home for every keystroke on a login form that went nowhere. Then I used my kafka publisher code to create a record for a reverse shell which dumped me to the DNS container. Then I updated records and restarted dnsmasq. Finally I sent a phishing email to my victim with a link to my site. Here was the USER flag.
 
@@ -103,7 +103,7 @@ print(f"target: {target}")
     
     Read data files from: /usr/bin/../share/nmap
     Nmap done: 1 IP address (1 host up) scanned in 0.23 seconds
-    
+``` 
 
 
 Here we find SSH and a web site. We'll take what we can get.
@@ -220,7 +220,7 @@ https://git.sorcery.htb/nicole_sullivan/infrastructure/src/commit/acb753dd975a63
 FROM node:22.6.0 AS base
 ```
 
-While in the git repo, we also see the following issue that for which we should keep an eye out:
+While in the git repo, we also see the following issue for which we should keep an eye out:
 
 > The backend was exposed to database statement injection. Most calls have already been replaced with safe ones. We have to do the same for the remaining ones.
 
@@ -444,8 +444,8 @@ with requests.Session() as s:
 
 When encountering this suspected weakness, I had to do a bit of research to reacquaint myself with the technique.
 
-* https://pentester.land/blog/cypher-injection-cheatsheet/
-* https://www.youtube.com/watch?v=SIqKo7xiPVA
+* [Cypher Injection Cheatsheet](https://pentester.land/blog/cypher-injection-cheatsheet/)
+* [Youtube cypher TLDR](https://www.youtube.com/watch?v=SIqKo7xiPVA)
 
 The gist of the vulnerability is as such:
 {% raw %}
@@ -1277,8 +1277,10 @@ O+6GmyWtrq5YPRkLFF+oxGqrFucnrIUvz36k+g/5oEZnQfLjTUqyUk8BFy4XPsj+
 q96CUeo2j0bq0vikyRaJVy3zIxopmGSejBN+7/9e8h/lLap+bG1zTYl3o131D5mw
 FLqBTI/9J4WKjNDQl8nOlCbjp9LtpzSAvn1826wKus4DgW8PaKkkJI43MRU=
 -----END RSA PRIVATE KEY-----
+```
 
 Below are the commands used to generate a cert signed by the CA.
+
 ```sh
 (.venv)  /certificate  openssl genrsa -out toku.key 2048
 (.venv)  /certificate  openssl req -new -key toku.key -out toku.csr
@@ -1308,6 +1310,7 @@ Certificate request self-signature ok
 subject=C=AU, ST=Some-State, O=Internet Widgits Pty Ltd
 (.venv)  /certificate  openssl verify -CAfile RootCA.crt toku.crt  
 toku.crt: OK
+```
 
 With that out of the way, we can move onto the next requirement for our phishing campaign, sending emails.
 
@@ -1890,7 +1893,7 @@ listeners=http://0.0.0.0:8082
 
 The bootstrap server is both: not on a host that will re-advertise as the appropriate hsot (kafka) and not on a port that's listening to bootstrap traffic (should be 9092). 
 
-If someone has a better idea why this doesn't work for producers but does work for consuemrs, though; I'd love to know.
+If someone has a better idea why this doesn't work for producers but does work for consumers, though; I'd love to know.
 
 After posting the update topic with a reverse shell we get on the dns container. Remember that we need to have a valid subdomain that our victim can use to get to us. Let's add a few.
 
