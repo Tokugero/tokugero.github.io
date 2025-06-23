@@ -953,7 +953,7 @@ This is what I used to manually verify the required commands for vftpd
 ```sh
 docker run --rm -it -v $(pwd):/var/ftp/pub -v $(pwd)/logs:/var/log/vsftpd -p 21:21 -p 21100-21110:21100-21110 -e ANONYMOUS_ACCESS=true million12/vsftpd:cd94636
 ```
-socket code below
+The socket code below just helped to debug WHICH FTP commands were necessary to get a clean response from the sendPortData. Ultimately I probably could have pointed the remote backend to my ftp server, similar to how I will test with Kafka.
 
 
 ```python
