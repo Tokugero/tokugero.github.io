@@ -267,7 +267,7 @@ applicable law.
 
 Last login: Sat Jun 21 19:46:35 2025 from 10.10.14.31
 app@artificial:~$ 
-
+```
 I spent some time here trying to forge JWTs with the littered jwt-secrets, to no avail.
 
 It was useful to open a port forwarded socket to the backend service I identified on 9098 to see what it was:
@@ -341,7 +341,7 @@ Doing some more research on the :9898 service, as this seems like an organic pro
 [backrest github](https://github.com/garethgeorge/backrest)  
 
 Looking around the system we see this backrest_backup.tar.gz is group readable by sysadm. If we check `/etc/group` we can see that `gael` is a member of this group. Lets steal it!
-
+```sh
 gael@artificial:~$ cp /var/backups/backrest_backup.tar.gz .
 gael@artificial:~$ ls
 backrest_backup.tar.gz  linpeas.sh  user.txt
@@ -367,7 +367,7 @@ backrest/processlogs/backrest.log
 backrest/install.sh
 gael@artificial:~$ cd backrest/
 gael@artificial:~/backrest$ 
-
+```
 In the `.config` directory we find a user and password for this service:
 
 ```sh
