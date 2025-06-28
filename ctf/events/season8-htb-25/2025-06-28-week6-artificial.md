@@ -7,7 +7,6 @@ description: This challenge was pretty simple. Read some tensorflow documentatio
 parent: HackTheBox - Season 8
 grand_parent: Challenges
 event: "htb-season-8"
-published: false
 tags:
 - "web"
 - "linux"
@@ -432,3 +431,5 @@ gael@artificial:~/restre3/snapshots/latest/root$ cat root.txt
 ```
 
 I wasn't able to log into root, but I bet I could get clever to restore an authorized_keys to /root/.ssh/ and restore a modified /etc/ssh/sshd_config with `permit root login` if I wanted to get full access to the system. But after last week's insane challenge I think I'll leave that exercise to the reader.
+
+Afterwards my buddy found that the hooks endpoints allowed for straight command execution on triggers, that was a much more intuitive idea that did pop a shell.
