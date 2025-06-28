@@ -371,7 +371,7 @@ gael@artificial:~/backrest$
 In the `.config` directory we find a user and password for this service:
 
 ```sh
-(.venv)  tokugero@pangolin  ~/ctf/htb/season8/wee6-artificial/backrest/.config/backrest   main  cat config.json 
+/backrest/.config/backrest   main  cat config.json 
 {
   "modno": 2,
   "version": 4,
