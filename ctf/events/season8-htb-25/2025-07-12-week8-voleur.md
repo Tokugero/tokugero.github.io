@@ -516,7 +516,7 @@ That file is password encoded. Lets throw it at hashcat/john
 
 Credential found: `football1`, classic corporate password.
 
-![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week8-voleur.md/2025-07-05-week8-voleur/images/image.png)
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-12-week8-voleur.md/2025-07-12-week8-voleur/images/image.png)
 
 Adding all these creds to our credentials list, and spraying again.
 
@@ -545,7 +545,7 @@ Adding all these creds to our credentials list, and spraying again.
 
 Let's see what we can do with our newly acquired accounts.
 
-![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week8-voleur.md/2025-07-05-week8-voleur/images/image-1.png)
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-12-week8-voleur.md/2025-07-12-week8-voleur/images/image-1.png)
 
 GenericWrite to a user lets us write their SPN. WriteSPN to a service lets us update that SPN as well. I tried to use some tools that automagically set SPNs as part of the attack to do a kerberoast, but I ended up having to manually do this.
 

