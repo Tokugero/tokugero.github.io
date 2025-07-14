@@ -7,7 +7,6 @@ description: "Voleur is a Windows box that has a samba share with a password pro
 parent: HackTheBox - Season 8
 grand_parent: Challenges
 event: "htb-season-8"
-published: false
 tags:
 - "samba"
 - "windows"
