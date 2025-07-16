@@ -563,3 +563,11 @@ root@outbound:/var/log/below# cd /root/
 root@outbound:~# cat root.txt
 447233d69b2cc88c5cf7fc77444c87c4
 ```
+
+## Bonus Detail
+
+Roundcube has a handy decrypt.sh that can decrypt those session passwords, no need to manually 3des decrypt:
+```sh
+root@mail:/var/www/html/roundcube/bin# ./decrypt.sh L7Rv00A8TuwJAr67kITxxcSgnIk25Am/
+595mO8DmwGeD
+```
