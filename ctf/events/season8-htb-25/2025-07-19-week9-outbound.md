@@ -7,7 +7,6 @@ description: "Outbound elevates permissions through simple published CVEs and so
 parent: HackTheBox - Season 8
 grand_parent: Challenges
 event: "htb-season-8"
-published: false
 tags:
 - "linux"
 - "easy"
