@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 6 artificial"
+title: "week 06 artificial"
 date: 2025-06-27 00:00:00 -0700
 categories: challenges
 description: This challenge was pretty simple. Read some tensorflow documentation to understand how to load an arbitrary lambda into a model, upload it to be ran by our target - then elevate permissions through a secondary backup service running on the server.

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 4 tombstone"
+title: "week 04 tombstone"
 date: 2025-05-31 00:00:00 -0700
 categories: challenges
 description: Windows AD enumeration with certificate forgery, again. But with deletions!

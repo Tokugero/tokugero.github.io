@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 7 rustykey"
+title: "week 07 rustykey"
 date: 2025-07-05 00:00:00 -0700
 categories: challenges
 description: "Rusty Key is a Windows challenge that targets machine delegation privilege escalation and DLL injections to laterally move."

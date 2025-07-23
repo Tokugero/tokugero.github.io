@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 8 voleur"
+title: "week 08 voleur"
 date: 2025-07-12 00:00:00 -0700
 categories: challenges
 description: "Voleur is a Windows box that has a samba share with a password protected xlsx doc that can be bruteforced to give access to service accounts. The service accounts allow for SPN writing and kerberoasting to get to user. With those permissions we can resurrect a removed user which has stored credentials to level 3 which has an ssh key to WSL which can get to the backup data in the depths of L3. From there a secretsdump reveals the admin hashes."

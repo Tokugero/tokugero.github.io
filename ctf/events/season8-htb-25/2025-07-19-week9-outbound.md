@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 9 outbound"
+title: "week 09 outbound"
 date: 2025-07-19 00:00:00 -0700
 categories: challenges
 description: "Outbound elevates permissions through simple published CVEs and some creative thinking about where to write what data."

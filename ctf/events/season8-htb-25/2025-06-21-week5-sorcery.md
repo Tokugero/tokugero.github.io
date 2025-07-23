@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 5 sorcery"
+title: "week 05 sorcery"
 date: 2025-06-21 00:00:00 -0700
 categories: challenges
 description: A complex multi-service challenge exploiting database injection, XSS, and command injection to escalate privileges, exfiltrate sensitive data, and ultimately achieve root access through a series of chained AD vulnerabilities.

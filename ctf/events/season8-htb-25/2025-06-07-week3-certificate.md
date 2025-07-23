@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "week 3 certificate"
+title: "week 03 certificate"
 date: 2025-05-31 00:00:00 -0700
 categories: challenges
 description: Windows AD enumeration with certificate forgery, again. But harder!
