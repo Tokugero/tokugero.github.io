@@ -4,4 +4,6 @@ _site
 .bundle/
 vendor/
 .gems/
+.direnv/node_modules
+node_modules/
 .direnv/
