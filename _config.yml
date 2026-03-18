@@ -19,7 +19,6 @@ description: >- # this means to ignore newlines until "baseurl:"
   A collection of write ups for various CTFs and other technical research related topics.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://tokugero.gihub.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: tokugero
 github_username: tokugero
 
 # Build settings
@@ -30,6 +29,24 @@ collections:
   ctfs:
     output: true
     permalink: /ctf/:path
+
+back_to_top: true
+search_enabled: true
+heading_anchors: true
+
+mermaid:
+  version: "10"
+
+callouts:
+  flag:
+    title: Flag
+    color: green
+  insight:
+    title: Key Insight
+    color: blue
+  warning:
+    title: Warning
+    color: red
 
 just_the_docs:
   collections:

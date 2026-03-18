@@ -2,15 +2,31 @@
 layout: default
 title: Challenges
 has_children: true
+has_toc: false
 nav_order: 2
 child_nav_order: reversed
 ---
 
-# Forward
-This is the first set of events I am applying some note taking strategies I learned while at LayerOne '24. I didn't have any interesting writeups from that event as they were very fast paced and it was very difficult to get access to the content by the time I got back home.
+# Challenges
 
-I met someone there that had been working with Jupyter to use as both a platform and note generator for his writeups. I thought that was a great idea and I am going to try to implement that here.
+Standalone machine and challenge write-ups from ongoing platform seasons.
 
-Until noted otherwise, these challenges were done on my attack box with Jupyter as the primary panel for executing my commands, and the output from those cells are what generates the raw output that is pre-processed for these articles.
+<div class="card-grid">
+{% assign children = site.html_pages | where: "parent", "Challenges" | sort: "nav_order" | reverse %}
+{% for child in children %}
+<div class="card">
+  <div class="card__title"><a href="{{ child.url | relative_url }}">{{ child.title }}</a></div>
+  {% if child.description %}
+  <div class="card__description">{{ child.description }}</div>
+  {% endif %}
+  <div class="card__meta">
+    {% assign grandchildren = site.html_pages | where: "parent", child.title | size %}
+    {% if grandchildren > 0 %}<span>{{ grandchildren }} write-ups</span>{% endif %}
+  </div>
+</div>
+{% endfor %}
+</div>
 
-Between that and GitHub CoPilot, I felt the experience quickly became natural outside of the effort of screen capturing or GUI tools like BurpSuite/ZAProxy etc. I am going to try to use the Jupyter notebook as a primary tool for my writeups going forward.
+---
+
+This is the first set of events I am applying some note taking strategies I learned while at LayerOne '24. Between Jupyter notebooks and GitHub CoPilot, the experience quickly became natural outside of the effort of screen capturing or GUI tools like BurpSuite/ZAProxy.

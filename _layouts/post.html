@@ -2,4 +2,67 @@
 layout: default
 ---
 
+{% if page.date or page.tags %}
+<div class="post-meta">
+  {% if page.date %}<span>{{ page.date | date: "%B %-d, %Y" }}</span>{% endif %}
+  {% if page.description %} &mdash; {{ page.description }}{% endif %}
+</div>
+{% endif %}
+
+{% if page.tags and page.tags.size > 0 %}
+<ul class="tag-list">
+  {% for tag in page.tags %}
+    <li class="tag{% if tag == 'easy' %} tag--easy{% elsif tag == 'medium' %} tag--medium{% elsif tag == 'hard' %} tag--hard{% endif %}">{{ tag }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% assign toc_entries = "" %}
+{% assign h1_parts = content | split: '<h1 id="' %}
+{% for part in h1_parts %}
+  {% if forloop.first %}{% continue %}{% endif %}
+  {% assign id = part | split: '"' | first %}
+  {% assign after_tag = part | split: '</h1>' | first %}
+  {% assign title = after_tag | strip_html | strip %}
+  {% if title != "" and id != "" %}
+    {% if toc_entries == "" %}
+      {% assign toc_entries = id | append: "|" | append: title %}
+    {% else %}
+      {% assign toc_entries = toc_entries | append: ";;;" | append: id | append: "|" | append: title %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% assign h2_parts = content | split: '<h2 id="' %}
+{% for part in h2_parts %}
+  {% if forloop.first %}{% continue %}{% endif %}
+  {% assign id = part | split: '"' | first %}
+  {% assign after_tag = part | split: '</h2>' | first %}
+  {% assign title = after_tag | strip_html | strip %}
+  {% if title != "" and id != "" %}
+    {% if toc_entries == "" %}
+      {% assign toc_entries = id | append: "|" | append: title %}
+    {% else %}
+      {% assign toc_entries = toc_entries | append: ";;;" | append: id | append: "|" | append: title %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% assign toc_list = toc_entries | split: ";;;" %}
+{% if toc_list.size > 2 %}
+<details class="post-toc" open>
+  <summary>Table of Contents</summary>
+  <ul>
+    {% for entry in toc_list %}
+      {% assign parts = entry | split: "|" %}
+      {% assign entry_id = parts[0] %}
+      {% assign entry_title = parts[1] %}
+      {% assign page_slug = page.title | slugify %}
+      {% if entry_id != page_slug %}
+        <li><a href="#{{ entry_id }}">{{ entry_title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</details>
+{% endif %}
+
 {{ content }}
