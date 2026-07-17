@@ -42,6 +42,11 @@ resumes the scribe, which reads your answers straight from this file.
   **A:**
 - **Event placement** — new `seasonN-htb-YY` event / existing `htb-machines`
   **A:**
+- **Publish timing** — _publish now (`published: true`)_ / hold until a date. Room
+  authors dislike writeups within **7 days of a box's release**. Default assumes it's
+  safe to release today; if this box is too fresh, answer with the date it becomes safe
+  (`hold until YYYY-MM-DD`) and the post ships as `published: false` + `publish_after: YYYY-MM-DD`.
+  **A:**
 
 ---
 

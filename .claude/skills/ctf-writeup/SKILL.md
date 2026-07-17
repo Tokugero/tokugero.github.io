@@ -85,6 +85,9 @@ python3 <skilldir>/scripts/nbdump.py <notebook> cells          # cells + truncat
 python3 <skilldir>/scripts/nbdump.py <notebook> urls           # embedded URLs (operator's sources)
 python3 <skilldir>/scripts/nbdump.py <notebook> attachments <scratch>/img   # extract screenshots
 cat <box>/site/links.md 2>/dev/null                            # generic room-template bookmarks — NOT proof of use
+# Embedded exploit repos = real tools the operator cloned & used → citation sources:
+find <box> -name .git -maxdepth 4 \( -type d -o -type f \) 2>/dev/null | \
+  while read g; do d=$(dirname "$g"); echo "$d → $(git -C "$d" remote get-url origin 2>/dev/null)"; done
 ```
 - If a **`## Final chain`** (or Summary/TL;DR) cell exists, it is the operator's own
   clean replay — use it to separate the **working path** from **exploration/dead-ends**.
@@ -95,6 +98,11 @@ cat <box>/site/links.md 2>/dev/null                            # generic room-te
   output) shows it, or the operator names it in the interview (golden rule 8).
   Everything from `site/`, `utils/`, and READMEs is reference-bookmark material at
   most — label it as such, never assert it as used.
+- **Embedded git repos** under `payloads/`/`artifacts/` are tools the operator actually
+  cloned and ran — grep each for its `origin` URL and cite the **public** ones directly.
+  This resolves tool provenance *mechanically* (public tool vs self-authored, credit/
+  attribution): it is NOT an interview question. The operator will not remember a source
+  that isn't in the notebook, so never ask them where a tool came from — check the repo.
 - Read extracted screenshots (Read tool) to know what each one shows before referencing it.
 - Produce a draft **attack-path reconstruction** (working chain, numbered) and a list
   of dead-ends. Show it to the operator to confirm you separated them correctly.
@@ -115,6 +123,10 @@ Write into the ledger, in this order:
   - Big blobs & log-spam → *elide with a marker* / collapse in `<details>` / verbatim.
   - Credential material → *partially redact* (`f29e9c01…be3b`) / verbatim / fully redact.
   - Event placement → new `seasonN-htb-YY` event vs existing `htb-machines` (see Step 4).
+  - Publish timing → *publish now* vs hold until a date. Room authors dislike writeups
+    within 7 days of a box's release; the post `date:` is the **solve** date, not the
+    release date, so this can't be computed — ask. Default `published: true`; if held,
+    the operator gives the safe date → `published: false` + `publish_after: YYYY-MM-DD`.
 - The **Socratic questions**, phase by phase, each `[PENDING]`.
 
 Then set the ledger `status: interviewing`, **stop, and hand back** — tell the
@@ -156,7 +168,13 @@ Ask only what the notebook doesn't already answer. Question bank (adapt per box)
 - **Privilege/loot decisions:** why this escalation path over an alternative (e.g.
   memory dump vs DCSync)? what constraint forced it?
 - **One-line lesson:** the sentence future-you should read first.
-- **Sources:** any writeup/video/blog leaned on, beyond what's in the notebook?
+
+**Never ask about sources beyond the notebook.** "Any writeup/video/blog you leaned
+on?" or "where did this tool come from?" yields nothing — the operator only remembers
+what's in the notebook; anything else is already forgotten. Tool/repo provenance is
+resolved *mechanically* by grepping embedded git repos for their `origin` URL (Step 1),
+citing the public ones — not by asking. Ask only about reasoning that genuinely lived
+in the operator's head during the engagement.
 
 The operator's answers **become the prose** of the 🧠 callouts. Do not embellish beyond
 what they said.
