@@ -22,6 +22,13 @@ they answer, and you do everything else. You never invent facts.
    "why" as free-text questions, phase by phase. Ask only what the notebook doesn't
    already answer.
 
+   **Ground every question in the real evidence** — quote the exact command and the
+   decisive output line it's about, state the fact and ask only the interpretation,
+   and never bake in a single plausible cause the operator can just agree with. A
+   thin one-line question makes the operator confabulate. "I don't recall" is a valid
+   answer that maps to `⚠️ observed-only`, not a prompt to try harder. If an answer
+   contradicts the notebook, surface it before writing.
+
 3. **Verify everything external.** Every MITRE ID, CVE, error-code explanation, and
    tool/repo link gets fetched and cited — never recalled from memory. Only tag a
    technique whose official definition matches what happened. HTTP-check every link

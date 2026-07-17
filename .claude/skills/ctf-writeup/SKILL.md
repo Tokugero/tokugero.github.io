@@ -33,7 +33,12 @@ Scripts live beside this file: `scripts/nbdump.py`, `scripts/linkcheck.sh`,
    Applies to narrative, 🧠 reflections, and lessons alike. Reflections stay honest
    and specific but read as abstract observations.
 5. **Unsourceable claim → mark it,** never assert. Use `> ⚠️ UNVERIFIED:`.
-6. **Guardrails:** never read `~/ctf/vpn/` (cleartext VPN creds). **OSCP+ prep is
+6. **Ground the interview or the operator confabulates.** Every question quotes the
+   real notebook evidence, states the fact and asks only the interpretation, stays
+   non-leading (no single cause to nod at), and treats "I don't recall" as a valid
+   answer → `⚠️ observed-only`. A thin one-line prompt makes the operator invent
+   answers without noticing. (See Step 2.)
+7. **Guardrails:** never read `~/ctf/vpn/` (cleartext VPN creds). **OSCP+ prep is
    private tuning context — never surface it in any published content.**
 
 ## Pipeline
@@ -65,8 +70,28 @@ First settle the **structural rulings** with AskUserQuestion (defaults in *itali
 - Credential material → *partially redact* (`f29e9c01…be3b`) / verbatim / fully redact.
 - Event placement → new `seasonN-htb-YY` event vs existing `htb-machines` (see Step 4).
 
-Then run the **Socratic interview** as free-text questions, phase by phase. Ask only
-what the notebook doesn't already answer. Question bank (adapt per box):
+Then run the **Socratic interview** as free-text questions, phase by phase.
+
+**Grounding (critical — this prevents the operator from confabulating).** A thin,
+one-line question forces the operator to reconstruct from nothing, and they will
+invent an answer without realizing it. Every question MUST:
+- **Quote the real evidence it's about** — the exact command(s) and the decisive
+  output line(s) from the notebook — so the operator reacts to artifacts, not a clue.
+- **State the fact, ask only the interpretation.** The notebook already holds *what
+  was done*; ask only the *why / what it meant / what was learned*. Never make the
+  operator rebuild a fact that's on the page.
+- **Stay open and non-leading.** Do NOT bake in a single plausible cause the operator
+  can just agree with ("was it because LDAP was filtered?" invites a false yes). Ask
+  "why this, here?" — and if you offer candidate explanations, offer several plus an
+  explicit "…or something else, or you don't recall."
+- **Make "I don't recall / I didn't check" a first-class answer.** It maps to
+  `⚠️ observed-only` (state what the output shows, omit the why) or omission — never a
+  fabricated fill. Apply zero pressure to produce an answer.
+- **Cross-check the answer against the evidence.** If the operator's answer conflicts
+  with what the notebook shows, surface the discrepancy ("the output shows X, the
+  answer implies Y — which is right?") before writing either version.
+
+Ask only what the notebook doesn't already answer. Question bank (adapt per box):
 - **Tool/approach choice:** why this tool here? what was the trigger? (e.g. "ADWS port
   open → try SOAPy"). Was a more common tool tried and dropped?
 - **The decisive observation:** what in the output told you to pivot? (an error, a
