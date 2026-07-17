@@ -15,19 +15,25 @@ they answer, and you do everything else. You never invent facts.
    end to end. It carries every rule, the scripts, and the post template. Do not
    improvise a different process.
 
-2. **Reconstruct, then interview.** Use `nbdump.py` to read the notebook, harvest the
-   operator's own source links verbatim, and draft the attack-path reconstruction.
-   Show the reconstruction so the operator can confirm you split the working path
-   from the dead-ends. Then interview: structural rulings via AskUserQuestion, the
-   "why" as free-text questions, phase by phase. Ask only what the notebook doesn't
-   already answer.
+2. **Reconstruct, then interview in the ledger.** Use `nbdump.py` to read the notebook,
+   harvest the operator's own source links verbatim, and draft the attack-path
+   reconstruction. The interview happens **in a file**, not in chat: copy
+   `templates/interview.md` to `<site-root>/.interviews/<box>.md` and write into it the
+   reconstructed chain + dead-end split, the structural rulings (with defaults), and
+   every Socratic question (`[PENDING]`), phase by phase. Ask only what the notebook
+   doesn't already answer. Then **stop and hand back** the ledger path — do not ask the
+   questions in chat, do not use AskUserQuestion for the interview. One ledger per box
+   is what lets several boxes be interviewed in parallel. When resumed, read the answers
+   from the ledger: non-empty `**A:**` → answered; blank or "don't recall" →
+   `⚠️ observed-only`; `NEEDS CONTEXT` → quote the exact notebook fragment and re-ask.
+   Proceed only when nothing `[PENDING]` remains (or the operator says to).
 
    **Ground every question in the real evidence** — quote the exact command and the
    decisive output line it's about, state the fact and ask only the interpretation,
    and never bake in a single plausible cause the operator can just agree with. A
    thin one-line question makes the operator confabulate. "I don't recall" is a valid
    answer that maps to `⚠️ observed-only`, not a prompt to try harder. If an answer
-   contradicts the notebook, surface it before writing.
+   contradicts the notebook, surface it in the ledger before writing.
 
 3. **Verify everything external.** Every MITRE ID, CVE, error-code explanation, and
    tool/repo link gets fetched and cited — never recalled from memory. Only tag a
@@ -36,13 +42,25 @@ they answer, and you do everything else. You never invent facts.
    real URL or leave it explicitly unlinked. Confirm 403s are anti-bot via WebFetch.
 
 4. **Assemble to spec.** Impersonal voice (no I/we/you). Dead-ends kept with their
-   why. Blobs elided, secrets partially redacted, no cell-number citations, no OSCP
-   framing. Correct event placement and front matter. Build clean with Jekyll and
-   run the leak sweep + link check.
+   why. Blobs elided, no cell-number citations, no OSCP framing. Correct event
+   placement and front matter. Three anti-fabrication rules that bite Sonnet hardest:
+   - **Verbatim or prose, never a reconstructed transcript.** Every fenced block is
+     copied from a notebook cell — never synthesized, and never re-ported from another
+     stage to fill a gap. Image-only step you can't read as text → describe in prose.
+   - **Redaction is truncation, not substitution.** Visible chars of a redacted secret
+     must be a verbatim substring of the real value (real prefix + `…`), never invented.
+   - **"Used" means evidenced.** A tool/link is "used during the engagement" only if a
+     notebook cell shows it or the operator named it. `site/links.md`, `utils/`, and
+     READMEs are generic room scaffolding — label as reference bookmarks, never "used".
+
+   Then build clean with Jekyll and run the leak sweep, link check, **and
+   `groundcheck.py` (read-only gate — every token must trace to the notebook)**.
 
 5. **Hand back for curation. Do not publish on your own.** Present the rendered URLs
    and wait. Publishing (commit + push) is the operator's call and goes through the
-   `publish` skill.
+   `publish` skill. On a successful publish, delete the box's interview ledger
+   (`.interviews/<box>.md`) — it is ephemeral scaffolding; the published post is the
+   durable record.
 
 ## Hard stops
 - Never read `~/ctf/vpn/` — cleartext credentials.
