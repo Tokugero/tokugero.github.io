@@ -22,8 +22,9 @@ layout: default
 {% for part in h1_parts %}
   {% if forloop.first %}{% continue %}{% endif %}
   {% assign id = part | split: '"' | first %}
+  {% assign open_prefix = id | append: '">' %}
   {% assign after_tag = part | split: '</h1>' | first %}
-  {% assign title = after_tag | strip_html | strip %}
+  {% assign title = after_tag | remove_first: open_prefix | strip_html | strip %}
   {% if title != "" and id != "" %}
     {% if toc_entries == "" %}
       {% assign toc_entries = id | append: "|" | append: title %}
@@ -36,8 +37,9 @@ layout: default
 {% for part in h2_parts %}
   {% if forloop.first %}{% continue %}{% endif %}
   {% assign id = part | split: '"' | first %}
+  {% assign open_prefix = id | append: '">' %}
   {% assign after_tag = part | split: '</h2>' | first %}
-  {% assign title = after_tag | strip_html | strip %}
+  {% assign title = after_tag | remove_first: open_prefix | strip_html | strip %}
   {% if title != "" and id != "" %}
     {% if toc_entries == "" %}
       {% assign toc_entries = id | append: "|" | append: title %}

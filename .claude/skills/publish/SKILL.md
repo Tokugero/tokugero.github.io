@@ -20,6 +20,31 @@ bundle exec jekyll build 2>&1
 
 If the build exits non-zero or prints `Error:` / `Liquid Exception`, stop and report the error. Do not proceed.
 
+### 1b. Static rendering-integrity checks
+
+Grep the built `_site` for known formatting regressions before the browser pass. These
+are deterministic and cheap; any hit stops the publish.
+
+```bash
+# TOC id-leak: post.html builds the Table of Contents from heading HTML. If the title
+# extraction regresses, entries render as `some-id">Title` instead of `Title`. The tell
+# is a second `">` inside a TOC <li> link. Must be zero.
+leak=$(grep -rho '<li><a href="#[^<]*</a></li>' _site/ctf/ | grep -cE '">[^<]*">')
+echo "TOC id-leak entries: $leak"   # must be 0
+
+# Unrendered pipe tables: a kramdown table that didn't parse leaves a literal `|---|`
+# separator row in the HTML body. Must be zero.
+badtbl=$(grep -rlE '\|[[:space:]]*-{3,}' _site/ctf/ | wc -l)
+echo "pages with unrendered tables: $badtbl"   # must be 0
+
+# Broken local images: every /assets img referenced by a built page must exist on disk.
+```
+
+If `leak` or `badtbl` is non-zero, stop and fix the template/source — do not publish.
+The TOC generator lives in `_layouts/post.html`; titles come from heading inner-HTML with
+the `id">` opening prefix removed via `remove_first` (not a `">` split, which breaks on
+headings that contain inline `<code>`/links).
+
 ### 2. Serve
 
 Start the dev server in the background:
