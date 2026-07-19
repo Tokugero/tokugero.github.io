@@ -7,8 +7,7 @@ description: A leaked line-printer-daemon archive hides a shell-injectable job-n
 parent: HackTheBox - Season 11
 grand_parent: Challenges
 event: "htb-season-11"
-published: false
-publish_after: 2026-07-19   # 7-day author embargo — confirm actual release date
+published: true
 tags:
   - "HackTheBox"
   - "Linux"
