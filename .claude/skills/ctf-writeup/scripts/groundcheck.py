@@ -12,7 +12,14 @@ fabrication classes:
      the notebook (catches room-template bookmarks mislabeled as used).
   3. Flags — every 32-hex flag printed in the post must appear in the notebook.
 
-Usage: groundcheck.py <post.md> <engagement.ipynb>
+Usage: groundcheck.py <post.md> <engagement.ipynb> [<evidence-file> ...]
+
+Extra evidence files (beyond the first, which is always parsed as an .ipynb)
+are read as plain text and appended to the corpus verbatim. Use this only for
+boxes whose engagement.ipynb is documented as empty/boilerplate and whose
+real evidence lives in artifacts/ instead — list the specific artifact files
+the post actually cites, not whole directories (some artifact trees contain
+multi-GB binaries that don't belong in a text corpus).
 """
 import json, re, sys
 
@@ -31,6 +38,11 @@ def notebook_corpus(path):
     return "".join(buf)
 
 
+def text_corpus(path):
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        return f.read()
+
+
 def norm(s):
     # alphanumeric-only, lowercased — so line-wraps, prompts, quotes and
     # underscores in the source don't cause false mismatches
@@ -38,11 +50,13 @@ def norm(s):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print(__doc__)
         sys.exit(2)
     post = open(sys.argv[1]).read()
     raw = notebook_corpus(sys.argv[2])
+    for extra in sys.argv[3:]:
+        raw += "\n" + text_corpus(extra)
     corpus = norm(raw)          # alnum-only, for tool/flag membership checks
     corpus_lc = raw.lower()     # structure-preserving, for redaction contiguity
     v = []
